@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="335.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <TextField fx:id="usernameField" maxWidth="-Infinity" promptText="Enter your username" style="-fx-padding: 10px;" BorderPane.alignment="CENTER" />
+   </center>
+   <bottom>
+      <Button fx:id="loginButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Login" BorderPane.alignment="CENTER" onAction="#handleLogin"/>
+   </bottom>
+</BorderPane>
