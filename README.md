@@ -11,7 +11,7 @@ Albums
 
 Photos
 - Photos can only be in albums
-- Photo Dates (utilizie java.util.Calendar)
+- Photo Dates (utilize java.util.Calendar)
 - Location of photos (i.e. user should be able to define where these locations are and they should persist throughout the application locally)
 - Add photos
 - Remove photos
