@@ -5,9 +5,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.io.File;  
+import java.io.FileNotFoundException;  
+import java.util.Scanner; 
 import java.io.IOException;
 
 import javafx.event.ActionEvent;
@@ -21,10 +25,32 @@ public class LoginController {
     private Button loginButton;
 
     @FXML
+    private Label blankField;
+
+    @FXML
     private void handleLogin(ActionEvent event) {
-        // Implement your login logic here
-        // For simplicity, let's just open the dashboard directly
-        openDashboard();
+        // login logic
+        String user = usernameField.getText();
+        File users = new File("src/photos/models/users.txt");
+        System.out.println(users.exists());
+        System.out.println(users.isDirectory());
+        System.out.println(new File(".").getAbsoluteFile());
+        try {
+            //File users = new File("users.txt");
+            Scanner readUsers = new Scanner(users);
+            while(readUsers.hasNextLine()) {
+                String data = readUsers.nextLine();
+                if (user.equals(data)) {
+                    openDashboard();
+                }
+                else {
+                    blankField.setText("The user \"" + user + "\" does not exist.");
+                }
+            }
+            readUsers.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void openDashboard() {
