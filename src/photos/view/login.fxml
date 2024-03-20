@@ -13,6 +13,6 @@
       <Button fx:id="loginButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Login" BorderPane.alignment="CENTER" onAction="#handleLogin"/>
    </bottom>
    <top>
-      <Label fx:id="blankField" BorderPane.alignment="CENTER"/>
+      <Label fx:id="blankField" BorderPane.alignment="CENTER" style="-fx-text-fill: red;"/>
    </top>
 </BorderPane>
