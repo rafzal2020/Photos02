@@ -15,7 +15,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/photos/view/login.fxml"));
-        loader.setController(new LoginController()); // Set the controller here
+        //loader.setController(new LoginController()); // Set the controller here
         Parent root = loader.load();
 
         primaryStage.setScene(new Scene(root, 335, 600));

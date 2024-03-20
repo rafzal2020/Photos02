@@ -32,16 +32,18 @@ public class LoginController {
         // login logic
         String user = usernameField.getText();
         File users = new File("src/photos/models/users.txt");
-        System.out.println(users.exists());
-        System.out.println(users.isDirectory());
-        System.out.println(new File(".").getAbsoluteFile());
+
         try {
             //File users = new File("users.txt");
             Scanner readUsers = new Scanner(users);
             while(readUsers.hasNextLine()) {
                 String data = readUsers.nextLine();
+                String admin = "admin";
                 if (user.equals(data)) {
-                    openDashboard();
+                    if (user.equals(admin)) {
+                        openAdminDashboard();
+                    }
+                    else openDashboard();
                 }
                 else {
                     blankField.setText("The user \"" + user + "\" does not exist.");
@@ -61,6 +63,23 @@ public class LoginController {
             dashboardStage.setScene(new Scene(root));
             dashboardStage.setTitle("Dashboard");
             dashboardStage.show();
+
+            // Close the login window
+            Stage loginStage = (Stage) loginButton.getScene().getWindow();
+            loginStage.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void openAdminDashboard() {
+        try {
+            Stage adminStage = new Stage();
+            // Load the dashboard FXML file
+            Parent root = FXMLLoader.load(getClass().getResource("/photos/view/admin.fxml"));
+            adminStage.setScene(new Scene(root));
+            adminStage.setTitle("Dashboard");
+            adminStage.show();
 
             // Close the login window
             Stage loginStage = (Stage) loginButton.getScene().getWindow();
