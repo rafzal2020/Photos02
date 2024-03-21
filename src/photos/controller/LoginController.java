@@ -39,8 +39,8 @@ public class LoginController {
             while(readUsers.hasNextLine()) {
                 String data = readUsers.nextLine();
                 String admin = "admin";
-                if (user.equals(data)) {
-                    if (user.equals(admin)) {
+                if (user.equalsIgnoreCase(data)) {
+                    if (user.equalsIgnoreCase(admin)) {
                         openAdminDashboard();
                     }
                     else openDashboard();
