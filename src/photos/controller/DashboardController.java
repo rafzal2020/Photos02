@@ -22,10 +22,12 @@ import javafx.scene.control.ChoiceBox;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static photos.controller.LoginController.getLoggedInUser;
-
+import photos.models.Album;
 
 public class DashboardController {
 
@@ -39,7 +41,10 @@ public class DashboardController {
     private TilePane albumPane;
 
     @FXML
-    private DatePicker calendarSort;
+    private DatePicker calendarSortFrom;
+
+    @FXML
+    private DatePicker calendarSortTo;
 
     @FXML
     private Label dateCreatedLabel;
@@ -50,7 +55,10 @@ public class DashboardController {
     @FXML
     private ChoiceBox<String> selectAlbumChoice;
 
-    private ObservableList<String> albumNames = FXCollections.observableArrayList();
+    private ObservableList<Album> albums = FXCollections.observableArrayList();
+    List<String> albumNamesList = albums.stream()
+            .map(Album::getAlbumName)
+            .collect(Collectors.toList());
 
     @FXML
     private Button logOutBtn;
@@ -85,9 +93,10 @@ public class DashboardController {
     @FXML
     void initialize() {
         userLabel.setText("Logged in as " + getLoggedInUser());
-        albumNames.add("Album");
-        selectAlbumChoice.setItems(albumNames);
-        selectAlbumChoiceRename.setItems(albumNames);
+        // create default album
+        Album defaultAlbum = new Album("Album", getLoggedInUser(), 0);
+        albums.add(defaultAlbum);
+        initializeArrayPopulations();
 
         selectAlbumChoice.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             selectedAlbumToDelete = newValue; // Update the selected album name
@@ -99,51 +108,79 @@ public class DashboardController {
 
     }
 
+    void initializeArrayPopulations() {
+        List<String> albumNamesList = albums.stream()
+                .map(Album::getAlbumName)
+                .collect(Collectors.toList());
+        selectAlbumChoice.setItems(FXCollections.observableArrayList(albumNamesList));
+        selectAlbumChoiceRename.setItems(FXCollections.observableArrayList(albumNamesList));
+    }
+
     @FXML
     void handleAddAlbum(ActionEvent event) {
+        boolean isValid = true;
+        String s = null;
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Create Album");
         dialog.setHeaderText("Enter Album Name:");
         dialog.setContentText("Album Name:");
 
         Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            s = result.get();
+        }
 
-        ImageView albumIcon = new ImageView(new Image("/photos/models/folder-regular.png"));
-        albumIcon.setFitHeight(55);
-        albumIcon.setFitWidth(55);
-        albumIcon.setPickOnBounds(true);
-        albumIcon.setPreserveRatio(true);
-        // Create a new Label for the album name
-        Label albumName = new Label();
-        result.ifPresent(username -> {
-            if (!username.isEmpty()) {
-                albumName.setText(username);
-            } else {
-                albumName.setText("New Album");
-            }
-        });
+        if (s != null && isNameExists(s)){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setHeaderText("This album name already exists.");
+            alert.setContentText("Please enter a different name");
+            alert.showAndWait();
+            isValid = false;
+        }
 
-        //albumName.setPrefSize(17, 55);
-        albumName.setAlignment(Pos.CENTER);
-        albumName.setFont(new Font("Arial", 8));
+        if (isValid) {
+            ImageView albumIcon = new ImageView(new Image("/photos/models/folder-regular.png"));
+            albumIcon.setFitHeight(55);
+            albumIcon.setFitWidth(55);
+            albumIcon.setPickOnBounds(true);
+            albumIcon.setPreserveRatio(true);
+            // Create a new Label for the album name
+            Label albumName = new Label();
+            result.ifPresent(username -> {
+                if (!username.isEmpty()) {
+                    albumName.setText(username);
+                } else {
+                    albumName.setText("New Album");
+                }
+            });
 
-        // Create a VBox to hold the album icon and name
-        VBox buttonContainer = new VBox(albumIcon, albumName);
-        buttonContainer.setAlignment(Pos.CENTER);
-        buttonContainer.setPrefSize(55, 55);
+            //albumName.setPrefSize(17, 55);
+            albumName.setAlignment(Pos.CENTER);
+            albumName.setFont(new Font("Arial", 8));
 
-        // Create a new Button instance
-        Button newAlbumButton = new Button();
-        newAlbumButton.setMnemonicParsing(true);
-        // Set the graphic of the button to the VBox containing the album icon and name
-        newAlbumButton.setGraphic(buttonContainer);
-        // Set the preferred size of the button
-        newAlbumButton.setPrefSize(71, 71);
+            // Create a VBox to hold the album icon and name
+            VBox buttonContainer = new VBox(albumIcon, albumName);
+            buttonContainer.setAlignment(Pos.CENTER);
+            buttonContainer.setPrefSize(55, 55);
 
-        // Add the new album button to the albumPane TilePane
-        albumNames.add(albumName.getText());
-        selectAlbumChoice.setItems(albumNames);
-        albumPane.getChildren().add(newAlbumButton);
+            // Create a new Button instance
+            Button newAlbumButton = new Button();
+            newAlbumButton.setMnemonicParsing(true);
+            // Set the graphic of the button to the VBox containing the album icon and name
+            newAlbumButton.setGraphic(buttonContainer);
+            // Set the preferred size of the button
+            newAlbumButton.setPrefSize(71, 71);
+
+            // Add the new album button to the albumPane TilePane
+            Album newAlbum = new Album(albumName.getText(), getLoggedInUser(), 0);
+            albums.add(newAlbum);
+            initializeArrayPopulations();
+            albumPane.getChildren().add(newAlbumButton);
+            System.out.println(newAlbum.getAlbumName());
+            System.out.println(newAlbum.getUser());
+            System.out.println(newAlbum.getCreationDate().getTime());
+        }
     }
 
     @FXML
@@ -158,8 +195,11 @@ public class DashboardController {
                 }
                 return false;
             });
-            albumNames.remove(selectedAlbumToDelete); // Remove album name from list
+            // Remove album name from list
+            albums.removeIf(album -> selectedAlbumToDelete != null && selectedAlbumToDelete.equalsIgnoreCase(album.getAlbumName()));
             selectedAlbumToDelete = null; // Reset selected album name
+            initializeArrayPopulations();
+
         }
     }
 
@@ -190,16 +230,46 @@ public class DashboardController {
                     Button button = (Button) node;
                     VBox buttonContainer = (VBox) button.getGraphic();
                     Label albumLabel = (Label) buttonContainer.getChildren().get(1);
+                    /*Album renamedAlbum = null;
+                    for (Album album : albums) {
+                        if (albumLabel.getText().equalsIgnoreCase(album.getAlbumName())) {
+                            renamedAlbum = album;
+                            break;
+                        }
+                    }*/
                     if (albumLabel.getText().equals(selectedAlbumToRename)) {
                         albumLabel.setText(newName); // Update the text of the album label
+                        //assert renamedAlbum != null;
+                        //renamedAlbum.setAlbumName(newName);
                     }
                 }
             });
             // Update the album name in the list
-            albumNames.set(albumNames.indexOf(selectedAlbumToRename), newName);
+            for (Album album : albums) {
+                if (selectedAlbumToRename.equalsIgnoreCase(album.getAlbumName())) {
+                    album.setAlbumName(newName);
+                    System.out.println("New Name: " + album.getAlbumName());
+                    break;
+                }
+            }
+            /*FXCollections.observableArrayList(albumNamesList);
+            albumNamesList.set(albumNamesList.indexOf(selectedAlbumToRename), newName);*/
+
+
+            initializeArrayPopulations();
+
             selectedAlbumToRename = null; // Reset selected album name
             renameAlbumField.clear(); // Clear the text field
         }
+    }
+
+    private boolean isNameExists(String name) {
+        for (Album album : albums) {
+            if (name.equalsIgnoreCase(album.getAlbumName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

@@ -20,7 +20,7 @@
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
   <children>
     <MenuBar VBox.vgrow="NEVER">
       <menus>
@@ -73,22 +73,23 @@
                 <Color red="0.624" green="0.624" blue="0.624" fx:id="x2" />
               </textFill>
             </Label>
-                  <DatePicker layoutX="12.0" layoutY="297.0" />
-                  <Button layoutX="58.0" layoutY="64.0" mnemonicParsing="false" text="Add Album" />
-                  <Button layoutX="4.0" layoutY="101.0" mnemonicParsing="false" text="Delete">
+                  <DatePicker layoutX="24.0" layoutY="239.0" promptText="From" />
+                  <Button layoutX="73.0" layoutY="41.0" mnemonicParsing="false" text="Add Album" />
+                  <Button layoutY="79.0" mnemonicParsing="false" text="Delete" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                      <graphic>
                         <ChoiceBox prefWidth="150.0" />
                      </graphic>
                   </Button>
-                  <Button layoutY="148.0" mnemonicParsing="false" text="Rename">
+                  <Button layoutY="125.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="213.0" text="Rename" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                      <graphic>
                         <ChoiceBox prefWidth="150.0" />
                      </graphic>
                   </Button>
                   <Button layoutX="76.0" layoutY="501.0" mnemonicParsing="false" text="Log Out" />
-                  <Label layoutX="61.0" layoutY="275.0" text="Search by Date" />
+                  <Label layoutX="71.0" layoutY="222.0" text="Search by Date" />
                   <Label layoutX="53.0" layoutY="473.0" text="Logged in as User" />
-                  <TextField layoutX="11.0" layoutY="188.0" prefHeight="24.0" prefWidth="205.0" />
+                  <TextField layoutY="158.0" prefHeight="24.0" prefWidth="205.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                  <DatePicker layoutX="24.0" layoutY="302.0" promptText="To" />
           </children>
         </AnchorPane>
         <ScrollPane prefHeight="-1.0" prefWidth="-1.0">
