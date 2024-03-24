@@ -18,6 +18,8 @@ import javafx.event.ActionEvent;
 
 public class LoginController {
 
+    public static String loggedInUser = "";
+
     @FXML
     private TextField usernameField;
 
@@ -26,6 +28,11 @@ public class LoginController {
 
     @FXML
     private Label blankField;
+
+    public static String getLoggedInUser() {
+        return loggedInUser;
+    }
+
 
     @FXML
     private void handleLogin(ActionEvent event) {
@@ -40,6 +47,7 @@ public class LoginController {
                 String data = readUsers.nextLine();
                 String admin = "admin";
                 if (user.equalsIgnoreCase(data)) {
+                    loggedInUser = user;
                     if (user.equalsIgnoreCase(admin)) {
                         openAdminDashboard();
                     }
